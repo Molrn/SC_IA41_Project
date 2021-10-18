@@ -2,7 +2,6 @@ import chess
 from chess import Board
 from chess import SQUARES
 
-
 class ColorBoard:
     """docstring for ColorBoard."""
 
@@ -39,7 +38,7 @@ class ColorBoard:
             else : print('.',end = " ")
             if sq%8 == 7: print()
 
-    def board_compare(self, board:Board):
+    def board_compare_V1(self, board:Board):
         nb_same = 0
         same = False
         b_piece = 0
@@ -72,19 +71,58 @@ class ColorBoard:
                     diff_sq.append(sq)
         return [nb_same,c_piece,b_piece,diff_sq]
 
-    def search_path(self, board : Board, g : int):
-        [nb_same,c_piece,b_piece,diff_sq] = self.board_compare(board)
-        if nb_same == 64 :
-            return True
-        else:
-            if c_piece > b_piece :
-                board.pop()
-                return search_path(board, g-1)
-            h = 64 - nb_same
-            legal_moves = list(board.legal_moves)
-            sorted_moves = [legal_moves[0], h]
-            for moves in legal_moves:
-                if move.from_square in diff_sq :
-                    h = h - 1
-                if move.to_square in diff_sq :
-                    h = h - 1
+
+    def board_compare_V2(self, board:Board):
+        nb_same = 0
+        b_white_piece = 0
+        b_black_piece = 0
+        c_white_piece = 0
+        c_black_piece = 0
+        white_left_sq = []
+        black_left_sq = []
+        white_arrive_sq = []
+        black_arrive_sq = []
+
+        for sq in SQUARES:
+                b = board.piece_at(sq)
+                c_is_white= self.board[sq]
+                if b == None:
+                    if c_is_white == None:
+                        nb_same = nb_same + 1
+                    else :
+                        if c_is_white:
+                            c_white_piece = c_white_piece + 1
+                            white_arrive_sq.append(sq)
+                        else:
+                            c_black_piece = c_black_piece + 1
+                            black_arrive_sq.append(sq)
+                else :
+                    if b.color :
+                        b_white_piece = b_white_piece + 1
+                        if c_is_white != None:
+                            if c_is_white:
+                                c_white_piece = c_white_piece + 1
+                                nb_same = nb_same + 1
+                            else :
+                                white_left_sq.append(sq)
+                                black_arrive_sq.append(sq)
+                                c_black_piece = c_black_piece + 1
+                        else:
+                            white_left_sq.append(sq)
+                    else :
+                        b_black_piece = b_black_piece + 1
+                        if c_is_white != None:
+                            if c_is_white :
+                                c_white_piece = c_white_piece + 1
+                                black_left_sq.append(sq)
+                                white_arrive_sq.append(sq)
+                            else :
+                                c_black_piece = c_black_piece + 1
+                                nb_same = nb_same + 1
+                        else:
+                            black_left_sq.append(sq)
+
+        return [nb_same,b_white_piece,b_black_piece,\
+        c_white_piece,c_black_piece,\
+        white_left_sq,white_arrive_sq,\
+        black_left_sq, black_arrive_sq]
