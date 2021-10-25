@@ -2,7 +2,6 @@ from copy import deepcopy
 from board import ColorBoard, SearchBoard
 from chess import Board, SQUARES, parse_square, Move
 from time import time
-from POO_approach import run_search_path_V2
 
 
 def test_finder(color_fen:str, board : Board):
@@ -23,12 +22,12 @@ def test_finder(color_fen:str, board : Board):
     coeff = 3
     for move in b.move_stack:
         b2.push(move)
-        """[nb_same,b_w_p,b_b_p,c_w_p,c_b_p,\
+        [nb_same,b_w_p,b_b_p,c_w_p,c_b_p,\
         w_left_sq,w_arrive_sq,b_left_sq, b_arrive_sq]\
         = color.board_compare_V2(b2)
         h_sq = compute_h((64-nb_same), move, b2.turn, w_left_sq,\
-        w_arrive_sq, b_left_sq, b_arrive_sq, b2)"""
-        print(nb, move)#, h_sq + (nb - 1), coeff)
+        w_arrive_sq, b_left_sq, b_arrive_sq, b2)
+        print(nb, move, h_sq + (nb - 1), coeff)
         nb = nb + 1
 
     print("\nFinal Board :")
@@ -148,16 +147,12 @@ def search_path_V3(color : ColorBoard, board : Board, g : int, l_f, l_g, l_moves
                 [l_moves,l_f, l_g, l_board,size] \
                 = add_to_lists(l_moves,l_f, l_g, \
                 l_board, move, h_sq, g, board, size)
-                if h_sq != h :
-                    no_move_added = False
+                no_move_added = False
         if no_move_added :
             for move in legal_moves:
-                h_sq = compute_h(h, move, is_white_to_play, w_left_sq,\
-                w_arrive_sq, b_left_sq, b_arrive_sq, board)
-                if h_sq != h:
-                    [l_moves,l_f, l_g, l_board,size] \
-                    = add_to_lists(l_moves,l_f, l_g, \
-                    l_board, move, h, g, board, size)
+                [l_moves,l_f, l_g, l_board,size] \
+                = add_to_lists(l_moves,l_f, l_g, \
+                l_board, move, h, g, board, size)
         return [l_moves,l_f, l_g, l_board]
 
 def get_index(f:int,g: int, l_f:list, l_g:list, size : int):
@@ -181,7 +176,6 @@ def add_to_lists(l_moves,l_f, l_g, l_board, move, h, g, board, size):
     f = h + g
     # Go through the list to insert move values at the right spot
     index = get_index(f, g, l_f, l_g, size)
-
     # add values at the right spots in each list
     l_moves.insert(index,move)
     l_f.insert(index, f)

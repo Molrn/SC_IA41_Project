@@ -1,6 +1,5 @@
-import chess
-from chess import Board
-from chess import SQUARES
+from copy import deepcopy
+from chess import Board, SQUARES, Move
 
 class ColorBoard:
     """docstring for ColorBoard."""
@@ -126,3 +125,11 @@ class ColorBoard:
         c_white_piece,c_black_piece,\
         white_left_sq,white_arrive_sq,\
         black_left_sq, black_arrive_sq]
+
+class SearchBoard:
+    def __init__(self, board : Board, g : int, f : int, move : Move, coeff : float):
+        self.board = deepcopy(board)
+        self.g = g
+        self.f = f
+        self.move = move
+        self.coeff = coeff
