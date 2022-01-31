@@ -1,9 +1,11 @@
-from copy import deepcopy
-from chess import Board, SQUARES, Move
+from chess import Board, SQUARES
 
+# Class representing the final state of the problem
+# Board containing only piece colors and not their type
 class ColorBoard:
-    """docstring for ColorBoard."""
 
+    # A ColorBoard can be initialized from a Board or a fen
+    # default initialization is the starting Board
     def __init__(self, *args):
         if len(args) == 0:
             self.board = self.board_to_color(Board())
@@ -26,6 +28,8 @@ class ColorBoard:
                 b.append(None)
         return b
 
+# Console display of a ColorBoard
+# 'w' for white pieces, 'b' for black pieces, '.' for empty squares
     def print(self):
         for sq in SQUARES:
             sq2 = (7-sq//8)*8+sq%8
@@ -70,8 +74,16 @@ class ColorBoard:
                     diff_sq.append(sq)
         return [nb_same,c_piece,b_piece,diff_sq]
 
+# Compare the ColorBoard with a Board
+# Return following values :
+#   - number of pieces for black and white in each board
+#   - number of matching squares
+#   - List of squares where a piece leaves for black and for white
+#   (i.e pieces that are there in the Board but not there in the ColorBoard)
+#   - List of squares where a piece arrives for black and for white
+#   (i.e pieces that are there in the ColorBoard but not there in the Board)
 
-    def board_compare_V2(self, board:Board):
+    def board_compare(self, board:Board):
         nb_same = 0
         b_white_piece = 0
         b_black_piece = 0
@@ -121,15 +133,7 @@ class ColorBoard:
                         else:
                             black_left_sq.append(sq)
 
-        return [nb_same,b_white_piece,b_black_piece,\
-        c_white_piece,c_black_piece,\
-        white_left_sq,white_arrive_sq,\
+        return [nb_same,b_white_piece,b_black_piece,
+        c_white_piece,c_black_piece,
+        white_left_sq,white_arrive_sq,
         black_left_sq, black_arrive_sq]
-
-class SearchBoard:
-    def __init__(self, board : Board, g : int, f : int, move : Move, coeff : float):
-        self.board = deepcopy(board)
-        self.g = g
-        self.f = f
-        self.move = move
-        self.coeff = coeff
